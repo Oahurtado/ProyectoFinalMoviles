@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ProyectoFinalMoviles</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="consultar_mapa">Consultar Mapa</string>
+    <string name="latitud">Latitud</string>
+    <string name="longitud">Longitud</string>
+    <string name="textview">TextView</string>
+    <string name="descripci_n">Descripción</string>
+    <string name="registrar">Registrar</string>
+</resources>
