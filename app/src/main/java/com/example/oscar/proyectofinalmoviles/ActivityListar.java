@@ -6,14 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 public class ActivityListar extends AppCompatActivity {
      Button IrMapa;
-     EditText lat,longi,descri,nom;
+     EditText lat,longi,descri;
+     TextView list;
      String cod;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
@@ -26,6 +33,8 @@ public class ActivityListar extends AppCompatActivity {
       lat =(EditText)findViewById(R.id.EditLati);
       longi=(EditText)findViewById(R.id.EditLongi);
       descri=(EditText)findViewById(R.id.EditDescri);
+      list=(TextView) findViewById(R.id.TextListar);
+
       Bundle reciCod = getIntent().getExtras();
       cod = reciCod.getString("Codigo");
       IrMapa.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +69,28 @@ public class ActivityListar extends AppCompatActivity {
 
         }
 
+    }
+    public void listarUbicaciones(View l){
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String,Object> value = (Map<String,Object>) dataSnapshot.getValue();//Obtiene las primeras keys del json
+                for(Map.Entry<String ,Object> entry : value.entrySet()){
+                    Map<String ,Object> value2 = (Map<String,Object>) entry.getValue();
+                    for (Map.Entry<String,Object> entry1 : value2.entrySet()){
+                        Map<String,Object> value3 = (Map<String , Object>) entry1.getValue();
+                        if (value3.get("descripcion")!=null){
+                            list.append("\n"+value3.get("descripcion"));
+                        }
+                    }
+                }// este for Recorre las keys de value
+            }// termina el onDataChange
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        }); // termina el onCancelled
     }
 
 }
