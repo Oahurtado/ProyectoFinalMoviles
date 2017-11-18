@@ -46,8 +46,9 @@ public class MainActivity extends AppCompatActivity {
         contra = contraseña.getText().toString().trim();
 
 
+
         FirebaseDatabase data = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = data.getReference("Usuario").child(cod);// vamos la USUARIO  y a la identificacion ingresada
+        DatabaseReference myRef = data.getReference("Usuarios").child(cod);// vamos la USUARIO  y a la identificacion ingresada
         //Toast.makeText(this, "Entro", Toast.LENGTH_LONG).show();
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -68,7 +69,13 @@ public class MainActivity extends AppCompatActivity {
 
         if(contra.matches(contraBd)){
             Intent inte = new Intent(MainActivity.this,ActivityListar.class);
-            startActivity(inte);
+            inte.addFlags(inte.FLAG_ACTIVITY_CLEAR_TOP | inte.FLAG_ACTIVITY_CLEAR_TASK);
+            Bundle codigo = new Bundle();
+            codigo.putString("Codigo",cod);
+            inte.putExtras(codigo);
+
+           startActivity(inte);
+
             Toast.makeText(this, "Entro 2", Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_LONG).show();

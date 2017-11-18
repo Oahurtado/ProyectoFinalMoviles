@@ -7,4 +7,5 @@
     <string name="textview">TextView</string>
     <string name="descripci_n">Descripción</string>
     <string name="registrar">Registrar</string>
+    <string name="nombre_del_sitio">Nombre del sitio</string>
 </resources>

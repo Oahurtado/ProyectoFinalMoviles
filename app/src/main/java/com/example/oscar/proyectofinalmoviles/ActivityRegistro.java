@@ -17,7 +17,7 @@ public class ActivityRegistro extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
    // DatabaseReference usuario = FirebaseDatabase.getInstance().getReference().child("com.example.oscar.proyectofinalmoviles.Usuario");
-    DatabaseReference usuario = FirebaseDatabase.getInstance().getReference().child("Usuario");
+    DatabaseReference usuario = FirebaseDatabase.getInstance().getReference().child("Usuarios");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class ActivityRegistro extends AppCompatActivity {
             Toast.makeText(this,"Dede llenar todos los campos",Toast.LENGTH_LONG).show();
             System.out.print("entro 1");
         } else{
-            myRef.child("Usuario").child(cod).setValue(usu);
+            myRef.child("Usuarios").child(cod).setValue(usu);
             Toast.makeText(this,"Usuario ingresado",Toast.LENGTH_LONG).show();
             System.out.print("entro 2");
 
