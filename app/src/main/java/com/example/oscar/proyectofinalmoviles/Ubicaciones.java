@@ -5,12 +5,12 @@ package com.example.oscar.proyectofinalmoviles;
  */
 
 public class Ubicaciones {
-    public String latitud ,longitud, descripcion,nombre;
+    public String latitud ,longitud;
 
-    public Ubicaciones (String latitud, String longitud, String descripcion ){
+    public Ubicaciones (String latitud, String longitud ){
         this.latitud=latitud;
         this.longitud=longitud;
-        this.descripcion=descripcion;
+
 
     }
 }

@@ -61,12 +61,14 @@ public class ActivityListar extends AppCompatActivity {
         String descrip = descri.getText().toString().trim();
         String nombre= nomb.getText().toString().trim();
 
-        Ubicaciones ubi = new Ubicaciones(lati,longit,descrip);
+        Ubicaciones ubi = new Ubicaciones(lati,longit);
         if(lati.matches("")||longit.matches("")||descrip.matches("")){
             Toast.makeText(this,"Dede llenar todos los campos",Toast.LENGTH_SHORT).show();
 
         } else{
-            myRef.child(cod).child(nombre).setValue(ubi);
+            myRef.child(cod).child(nombre).child("descripcion"+cod).setValue(descrip);
+            myRef.child(cod).child(nombre).child("latitud").setValue(lati);
+            myRef.child(cod).child(nombre).child("latitud").setValue(longit);
             Toast.makeText(this,"Ubicación Ingresada",Toast.LENGTH_LONG).show();
 
 
