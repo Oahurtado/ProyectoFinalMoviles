@@ -21,8 +21,12 @@ public class ActivityListar extends AppCompatActivity {
      Button IrMapa;
      EditText lat,longi,descri,nomb;
      TextView list;
+     double latEnv,lngEnv;
 
-     String cod;
+     String cod,nombreUbi;
+     int cont=0;
+     String[] latArray,lngArray ;
+    String[] nombArray = new String[1];
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
@@ -74,6 +78,7 @@ public class ActivityListar extends AppCompatActivity {
         }
 
     }
+
     public void listarUbicaciones(View l){
 
         myRef.addValueEventListener(new ValueEventListener() {
@@ -86,15 +91,14 @@ public class ActivityListar extends AppCompatActivity {
 
                         Map<String, Object> value2 = (Map<String, Object>) entry.getValue();
 
-                            for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
 
+                            for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
 
                                 Map<String, Object> value3 = (Map<String, Object>) entry1.getValue();
                                 if (value3.get("descripcion") != null) {
                                     list.append("\n" + value3.get("descripcion"));
 
-
-                                }
+                                    }
 
 
                             }// este for Recorre las keys de value
