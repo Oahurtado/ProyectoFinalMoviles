@@ -23,6 +23,7 @@ public class ActivityListar extends AppCompatActivity {
      TextView list;
 
      String cod;
+
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
     @Override
@@ -68,6 +69,7 @@ public class ActivityListar extends AppCompatActivity {
             lat.setText("");
             longi.setText("");
             descri.setText("");
+            nomb.setText("");
 
         }
 
@@ -80,23 +82,24 @@ public class ActivityListar extends AppCompatActivity {
                 Map<String, Object> primeras = (Map<String, Object>) dataSnapshot.getValue();
 
 
-                for (Map.Entry<String, Object> entry : primeras.entrySet()) {
+                    for (Map.Entry<String, Object> entry : primeras.entrySet()) {
 
-                      Map<String, Object> value2 = (Map<String, Object>) entry.getValue();
+                        Map<String, Object> value2 = (Map<String, Object>) entry.getValue();
 
-                    for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
-
-
-                        Map<String, Object> value3 = (Map<String, Object>) entry1.getValue();
-                        if (value3.get("descripcion") != null) {
-                            list.append("\n" + value3.get("descripcion"));
+                            for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
 
 
-                        }
+                                Map<String, Object> value3 = (Map<String, Object>) entry1.getValue();
+                                if (value3.get("descripcion") != null) {
+                                    list.append("\n" + value3.get("descripcion"));
+
+
+                                }
+
+
+                            }// este for Recorre las keys de value
+
                     }
-
-                }// este for Recorre las keys de value
-
 
             }// termina el onDataChange
 
