@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference myRef = database.getReference();
     EditText codigoUsu, contraseña;
     Button botonLogin, botonRegistro;
-    String cod, contra, contraBd="";
+    String cod, contra, nomBD,contraBd="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +41,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void login(View g){
+     public void login(View g){
         cod=codigoUsu.getText().toString().trim();
         contra = contraseña.getText().toString().trim();
-
-
-
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         DatabaseReference myRef = data.getReference("Usuarios").child(cod);// vamos la USUARIO  y a la identificacion ingresada
         //Toast.makeText(this, "Entro", Toast.LENGTH_LONG).show();
@@ -56,8 +53,27 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 contraBd = dataSnapshot.child("contraseña").getValue().toString();/*una vez estamos dentro de los atributos del usuario con la identificacion
-                                                                                        ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
+                                                                                    ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
                                                                                         compararla con la que se ingreso que seta en Ide*/
+                nomBD=dataSnapshot.child("nombre").getValue().toString();
+                if(contra.matches(contraBd)){
+
+                    Intent inte = new Intent(MainActivity.this,ActivityListar.class);
+                    inte.addFlags(inte.FLAG_ACTIVITY_CLEAR_TOP | inte.FLAG_ACTIVITY_CLEAR_TASK);
+                    Bundle codigo = new Bundle();
+                    codigo.putString("Codigo",cod);
+                    inte.putExtras(codigo);
+
+                    startActivity(inte);
+                    Toast.makeText(getApplicationContext(),"Bienvenido "+ nomBD,Toast.LENGTH_LONG).show();
+
+                     codigoUsu.setText("");
+                     contraseña.setText("");
+                }else {
+                    Toast.makeText(getApplicationContext(),"Contraseña incorrecta",Toast.LENGTH_SHORT).show();
+                    codigoUsu.setText("");
+                    contraseña.setText("");
+                }
             }
 
             @Override
@@ -67,18 +83,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        if(contra.matches(contraBd)){
-            Intent inte = new Intent(MainActivity.this,ActivityListar.class);
-            inte.addFlags(inte.FLAG_ACTIVITY_CLEAR_TOP | inte.FLAG_ACTIVITY_CLEAR_TASK);
-            Bundle codigo = new Bundle();
-            codigo.putString("Codigo",cod);
-            inte.putExtras(codigo);
-
-           startActivity(inte);
-
-            Toast.makeText(this, "Entro 2", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_LONG).show();
-        }
     }
+
 }

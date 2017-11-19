@@ -19,8 +19,9 @@ import java.util.Map;
 
 public class ActivityListar extends AppCompatActivity {
      Button IrMapa;
-     EditText lat,longi,descri;
+     EditText lat,longi,descri,nomb;
      TextView list;
+
      String cod;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
@@ -30,6 +31,7 @@ public class ActivityListar extends AppCompatActivity {
         setContentView(R.layout.activity_listar);
 
       IrMapa =(Button)findViewById(R.id.ButIrMapa);
+      nomb=(EditText)findViewById(R.id.EditLugar);
       lat =(EditText)findViewById(R.id.EditLati);
       longi=(EditText)findViewById(R.id.EditLongi);
       descri=(EditText)findViewById(R.id.EditDescri);
@@ -52,14 +54,14 @@ public class ActivityListar extends AppCompatActivity {
         String lati = lat.getText().toString().trim();
         String longit = longi.getText().toString().trim();
         String descrip = descri.getText().toString().trim();
-
+        String nombre= nomb.getText().toString().trim();
 
         Ubicaciones ubi = new Ubicaciones(lati,longit,descrip);
         if(lati.matches("")||longit.matches("")||descrip.matches("")){
             Toast.makeText(this,"Dede llenar todos los campos",Toast.LENGTH_SHORT).show();
 
         } else{
-            myRef.child("UbicacionesPersonales").child(cod).setValue(ubi);
+            myRef.child(cod).child(nombre).setValue(ubi);
             Toast.makeText(this,"Ubicación Ingresada",Toast.LENGTH_LONG).show();
 
 
@@ -71,19 +73,31 @@ public class ActivityListar extends AppCompatActivity {
 
     }
     public void listarUbicaciones(View l){
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String,Object> value = (Map<String,Object>) dataSnapshot.getValue();//Obtiene las primeras keys del json
-                for(Map.Entry<String ,Object> entry : value.entrySet()){
-                    Map<String ,Object> value2 = (Map<String,Object>) entry.getValue();
-                    for (Map.Entry<String,Object> entry1 : value2.entrySet()){
-                        Map<String,Object> value3 = (Map<String , Object>) entry1.getValue();
-                        if (value3.get("descripcion")!=null){
-                            list.append("\n"+value3.get("descripcion"));
+                Map<String, Object> primeras = (Map<String, Object>) dataSnapshot.getValue();
+
+
+                for (Map.Entry<String, Object> entry : primeras.entrySet()) {
+
+                      Map<String, Object> value2 = (Map<String, Object>) entry.getValue();
+
+                    for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
+
+
+                        Map<String, Object> value3 = (Map<String, Object>) entry1.getValue();
+                        if (value3.get("descripcion") != null) {
+                            list.append("\n" + value3.get("descripcion"));
+
+
                         }
                     }
+
                 }// este for Recorre las keys de value
+
+
             }// termina el onDataChange
 
             @Override
