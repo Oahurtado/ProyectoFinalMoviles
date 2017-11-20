@@ -1,7 +1,9 @@
 package com.example.oscar.proyectofinalmoviles;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 public class ActivityListar extends AppCompatActivity {
      Button IrMapa;
+     Button volver;
      EditText lat,longi,descri,nomb;
      TextView list;
      double latEnv,lngEnv;
@@ -37,30 +40,40 @@ public class ActivityListar extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listar);
 
-      IrMapa =(Button)findViewById(R.id.ButIrMapa);
-      nomb=(EditText)findViewById(R.id.EditLugar);
-      lat =(EditText)findViewById(R.id.EditLati);
-      longi=(EditText)findViewById(R.id.EditLongi);
-      descri=(EditText)findViewById(R.id.EditDescri);
-      list=(TextView) findViewById(R.id.TextListar);
+        IrMapa = (Button) findViewById(R.id.ButIrMapa);
+        volver = (Button) findViewById(R.id.btnVolver);
+        nomb = (EditText) findViewById(R.id.EditLugar);
+        lat = (EditText) findViewById(R.id.EditLati);
+        longi = (EditText) findViewById(R.id.EditLongi);
+        descri = (EditText) findViewById(R.id.EditDescri);
+        list = (TextView) findViewById(R.id.TextListar);
         mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
+        AdRequest adRequest=new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
         mAdView.loadAd(adRequest);
 
-      Bundle reciCod = getIntent().getExtras();
-      cod = reciCod.getString("Codigo");
-      IrMapa.setOnClickListener(new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              Intent intent = new Intent(ActivityListar.this, MapsActivity.class);
-              startActivity(intent);
-          }
-      });
 
+        Bundle reciCod = getIntent().getExtras();
+        cod = reciCod.getString("Codigo");
+        IrMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityListar.this, MapsActivity.class);
+                startActivity(intent);
+            }
+        });
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
 
+            public void onClick(View v) {
+
+                volver();
+
+            }
+        });
     }
+
 
     public void RegistrarUbicacion(View r){
         String lati = lat.getText().toString().trim();
@@ -126,5 +139,33 @@ public class ActivityListar extends AppCompatActivity {
             }
         }); // termina el onCancelled
     }
+
+    public void volver(){
+
+
+        AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+        dialogo1.setTitle("Importante");
+        dialogo1.setMessage("Esta seguro que desea cerrar sesión ");
+        dialogo1.setCancelable(false);
+        dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                Intent intent = new Intent(ActivityListar.this, MainActivity.class);
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(),"Gracias por utilizar nuestra aplicación",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialogo1, int id) {
+                dialogo1.cancel();
+
+            }
+        });
+        dialogo1.show();
+}
+
+
+
+
 
 }

@@ -70,7 +70,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-
         miUbicacion();
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -121,7 +120,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(Labo).title("LABORATORIOS"));
         mMap.addMarker(new MarkerOptions().position(Lag).title("LAGO"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(BloqA));
-
+        CameraUpdate miUbicacion2 = CameraUpdateFactory.newLatLngZoom(BloqA, 18);
+        mMap.animateCamera(miUbicacion2);
 
 
     }
