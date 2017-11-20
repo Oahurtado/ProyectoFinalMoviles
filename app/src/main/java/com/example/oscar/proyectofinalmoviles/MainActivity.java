@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                                                                                     ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
                                                                                         compararla con la que se ingreso que seta en Ide*/
                 nomBD=dataSnapshot.child("nombre").getValue().toString();
+
                 if(contra.matches(contraBd)){
 
                     Intent inte = new Intent(MainActivity.this,ActivityListar.class);

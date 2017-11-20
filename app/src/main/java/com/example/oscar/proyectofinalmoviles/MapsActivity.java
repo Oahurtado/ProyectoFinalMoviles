@@ -118,6 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(Distan).title("DISTANCIA"));
         mMap.addMarker(new MarkerOptions().position(Labo).title("LABORATORIOS"));
         mMap.addMarker(new MarkerOptions().position(Lag).title("LAGO"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(BloqA));
 
 
 
