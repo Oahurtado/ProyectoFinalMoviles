@@ -2,23 +2,30 @@ package com.example.oscar.proyectofinalmoviles;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
 public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
+
+
+
+
+    AdView mAdView;
     EditText codigoUsu, contraseña;
     Button botonLogin, botonRegistro;
     String cod, contra, nomBD,contraBd="";
@@ -26,10 +33,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         codigoUsu = (EditText) findViewById(R.id.txtUsuario);
         contraseña = (EditText) findViewById(R.id.txtContraseña);
         botonLogin = (Button) findViewById(R.id.btnLogin);
         botonRegistro = (Button) findViewById(R.id.btnRegistro);
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
 
 
         botonRegistro.setOnClickListener(new View.OnClickListener() {
@@ -43,9 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
      public void login(View g){
-         AlertDialog.Builder myBuild = new AlertDialog.Builder(this);
-
-         cod=codigoUsu.getText().toString().trim();
+        cod=codigoUsu.getText().toString().trim();
         contra = contraseña.getText().toString().trim();
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         DatabaseReference myRef = data.getReference("Usuarios").child(cod);// vamos la USUARIO  y a la identificacion ingresada
@@ -59,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                                                                                     ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
                                                                                         compararla con la que se ingreso que seta en Ide*/
                 nomBD=dataSnapshot.child("nombre").getValue().toString();
-
                 if(contra.matches(contraBd)){
 
                     Intent inte = new Intent(MainActivity.this,ActivityListar.class);
