@@ -2,6 +2,7 @@ package com.example.oscar.proyectofinalmoviles;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +27,7 @@ public class ActivityListar extends AppCompatActivity {
      Button volver;
      EditText lat,longi,descri,nomb;
      TextView list;
-     double latEnv,lngEnv;
+
 
      String cod,nombreUbi;
      int cont=0;
@@ -102,11 +103,20 @@ public class ActivityListar extends AppCompatActivity {
     }
 
     public void listarUbicaciones(View l){
-       final String ubi = "descripcion"+cod;
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> primeras = (Map<String, Object>) dataSnapshot.getValue();
+        ListarBloques Listar = new ListarBloques();
+        Listar.execute();
+
+    }
+
+    private class ListarBloques extends AsyncTask<Void,Integer,Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            final String ubi = "descripcion"+cod;
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Map<String, Object> primeras = (Map<String, Object>) dataSnapshot.getValue();
 
 
                     for (Map.Entry<String, Object> entry : primeras.entrySet()) {
@@ -114,30 +124,52 @@ public class ActivityListar extends AppCompatActivity {
                         Map<String, Object> value2 = (Map<String, Object>) entry.getValue();
 
 
-                            for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
+                        for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
 
-                                Map<String, Object> value3 = (Map<String, Object>) entry1.getValue();
-                                if ( value3.get("descripcion") != null ) {
-                                    list.append("\n" + value3.get("descripcion"));
+                            Map<String, Object> value3 = (Map<String, Object>) entry1.getValue();
+                            if ( value3.get("descripcion") != null ) {
+                                list.append("\n" + value3.get("descripcion"));
 
-                                    }
-                                if (value3.get(ubi) != null){
-                                    list.append("\n" + value3.get(ubi));
+                            }
+                            if (value3.get(ubi) != null){
+                                list.append("\n" + value3.get(ubi));
 
-                                }
+                            }
 
 
-                            }// este for Recorre las keys de value
+                        }// este for Recorre las keys de value
 
                     }
 
-            }// termina el onDataChange
+                }// termina el onDataChange
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        }); // termina el onCancelled
+                }
+            }); // termina el onCancelled
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+
+            list.append(""+values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            Toast.makeText(getApplicationContext(),"Tus ubicaciones fueran listadas",Toast.LENGTH_SHORT).show();
+
+        }
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            super.onCancelled(aVoid);
+        }
     }
 
     public void volver(){
