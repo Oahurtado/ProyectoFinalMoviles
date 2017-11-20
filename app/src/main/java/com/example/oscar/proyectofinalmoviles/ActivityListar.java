@@ -68,7 +68,7 @@ public class ActivityListar extends AppCompatActivity {
         } else{
             myRef.child(cod).child(nombre).child("descripcion"+cod).setValue(descrip);
             myRef.child(cod).child(nombre).child("latitud").setValue(lati);
-            myRef.child(cod).child(nombre).child("latitud").setValue(longit);
+            myRef.child(cod).child(nombre).child("longitud").setValue(longit);
             Toast.makeText(this,"Ubicación Ingresada",Toast.LENGTH_LONG).show();
 
 
@@ -82,7 +82,7 @@ public class ActivityListar extends AppCompatActivity {
     }
 
     public void listarUbicaciones(View l){
-
+       final String ubi = "descripcion"+cod;
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -97,10 +97,14 @@ public class ActivityListar extends AppCompatActivity {
                             for (Map.Entry<String, Object> entry1 : value2.entrySet()) {
 
                                 Map<String, Object> value3 = (Map<String, Object>) entry1.getValue();
-                                if (value3.get("descripcion") != null) {
+                                if ( value3.get("descripcion") != null ) {
                                     list.append("\n" + value3.get("descripcion"));
 
                                     }
+                                if (value3.get(ubi) != null){
+                                    list.append("\n" + value3.get(ubi));
+
+                                }
 
 
                             }// este for Recorre las keys de value

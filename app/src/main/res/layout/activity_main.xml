@@ -46,6 +46,9 @@
             android:layout_weight="0.11"
             android:text="Registrase" />
 
+
+
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
