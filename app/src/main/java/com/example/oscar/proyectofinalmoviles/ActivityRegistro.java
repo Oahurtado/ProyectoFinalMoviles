@@ -8,12 +8,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class ActivityRegistro extends AppCompatActivity {
     EditText nombre, codigo, contraseña;
     Button botonVolver;
+    AdView mAdView;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
    // DatabaseReference usuario = FirebaseDatabase.getInstance().getReference().child("com.example.oscar.proyectofinalmoviles.Usuario");
@@ -27,6 +30,11 @@ public class ActivityRegistro extends AppCompatActivity {
         codigo = (EditText)findViewById(R.id.txtCodigo);
         contraseña = (EditText)findViewById(R.id.txtContraseña);
         botonVolver= (Button)findViewById(R.id.btnVolver);
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
 
         botonVolver.setOnClickListener(new View.OnClickListener() {
             @Override

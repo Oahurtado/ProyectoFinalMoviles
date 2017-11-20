@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +29,7 @@ public class ActivityListar extends AppCompatActivity {
      int cont=0;
      String[] latArray,lngArray ;
     String[] nombArray = new String[1];
-
+    AdView mAdView;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
     @Override
@@ -41,6 +43,11 @@ public class ActivityListar extends AppCompatActivity {
       longi=(EditText)findViewById(R.id.EditLongi);
       descri=(EditText)findViewById(R.id.EditDescri);
       list=(TextView) findViewById(R.id.TextListar);
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
 
       Bundle reciCod = getIntent().getExtras();
       cod = reciCod.getString("Codigo");
