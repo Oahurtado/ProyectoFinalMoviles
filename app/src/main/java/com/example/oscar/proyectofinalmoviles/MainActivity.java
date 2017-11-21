@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     Button botonLogin, botonRegistro;
     String cod, contra, nomBD,contraBd="";
     AdView mAdView;
-    //logeo loge=null;
+    Hash md5;
+    String contraCifrada;
 
     boolean flagSinc = false;
     @Override
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         contraseña = (EditText) findViewById(R.id.txtContraseña);
         botonLogin = (Button) findViewById(R.id.btnLogin);
         botonRegistro = (Button) findViewById(R.id.btnRegistro);
+        md5 =new Hash();
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest=new AdRequest.Builder()
@@ -113,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         //Login
         cod=codigoUsu.getText().toString().trim();
         contra = contraseña.getText().toString().trim();
+        contraCifrada=md5.md5(contra);
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         DatabaseReference myRef = data.getReference("Usuarios").child(cod);// vamos la USUARIO  y a la identificacion ingresada
         //Toast.makeText(this, "Entro", Toast.LENGTH_LONG).show();
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
            //     Toast.makeText(getApplicationContext(),"entro antes de comparar",Toast.LENGTH_SHORT).show();
                 nomBD=dataSnapshot.child("nombre").getValue().toString();
 
-                if(contra.matches(contraBd)){
+                if(contraCifrada.matches(contraBd)){
 
                     Intent inte = new Intent(MainActivity.this,ActivityListar.class);
                     inte.addFlags(inte.FLAG_ACTIVITY_CLEAR_TOP | inte.FLAG_ACTIVITY_CLEAR_TASK);
@@ -137,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
                     inte.putExtras(codigo);
                     startActivity(inte);
                     Toast.makeText(getApplicationContext(),"Bienvenido "+ nomBD,Toast.LENGTH_LONG).show();
-
                      codigoUsu.setText("");
                      contraseña.setText("");
                 }else {

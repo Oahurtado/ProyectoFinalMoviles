@@ -21,6 +21,8 @@ public class ActivityRegistro extends AppCompatActivity {
     DatabaseReference myRef = database.getReference();
    // DatabaseReference usuario = FirebaseDatabase.getInstance().getReference().child("com.example.oscar.proyectofinalmoviles.Usuario");
     DatabaseReference usuario = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+    Hash md5;
+    String contraCifrada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class ActivityRegistro extends AppCompatActivity {
         codigo = (EditText)findViewById(R.id.txtCodigo);
         contraseña = (EditText)findViewById(R.id.txtContraseña);
         botonVolver= (Button)findViewById(R.id.btnVolver);
+        md5 = new Hash();
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -48,15 +51,19 @@ public class ActivityRegistro extends AppCompatActivity {
 
     }
 
+
+
     public void ingresar(View b){
+
 
         String nom = nombre.getText().toString().trim();
         String cod = codigo.getText().toString().trim();
         String contra = contraseña.getText().toString().trim();
        // Toast.makeText(this,"entro 1",Toast.LENGTH_LONG).show();
 
+        contraCifrada=md5.md5(contra);
 
-       Usuario usu= new Usuario(nom,cod,contra);
+       Usuario usu= new Usuario(nom,cod,contraCifrada);
        if(nom.matches("")||cod.matches("")||contra.matches("")){
             Toast.makeText(this,"Dede llenar todos los campos",Toast.LENGTH_LONG).show();
             System.out.print("entro 1");
