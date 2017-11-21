@@ -20,6 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 public class ActivityListar extends AppCompatActivity {
@@ -27,6 +31,7 @@ public class ActivityListar extends AppCompatActivity {
      Button volver;
      EditText lat,longi,descri,nomb;
      TextView list;
+    String iplocal="http://localhost/Coordenadas/insertar_coordenada.php";
 
 
      String cod,nombreUbi;
@@ -197,7 +202,48 @@ public class ActivityListar extends AppCompatActivity {
 }
 
 
+    public void ingresarSQL(View i){
 
+        ingreSQL ing = new ingreSQL() ;
+        ing.execute();
+        Toast.makeText(getApplicationContext(),"si entra al boton",Toast.LENGTH_SHORT).show();
+    }
+    public  class  ingreSQL extends AsyncTask<Void,String,String>{
+
+        @Override
+
+        protected String doInBackground(Void... voids) {
+            try {
+                URL serviciolocal = new URL(iplocal);
+                HttpURLConnection conexion = (HttpURLConnection) serviciolocal.openConnection();
+                conexion.setRequestProperty("User-Agent","Mozilla/5.0"+
+                        "(Linuz;Android 1.5; es-Es) Ejemplo Uceva Http");
+                int conectado = conexion.getResponseCode();
+                if (conectado== HttpURLConnection.HTTP_OK){
+
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(getApplicationContext(),"si entra al hilo",Toast.LENGTH_SHORT).show();
+
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }
 
 
 }

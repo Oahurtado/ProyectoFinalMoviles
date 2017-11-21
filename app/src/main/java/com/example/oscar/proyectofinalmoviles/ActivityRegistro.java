@@ -1,6 +1,7 @@
 package com.example.oscar.proyectofinalmoviles;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,10 +14,16 @@ import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class ActivityRegistro extends AppCompatActivity {
     EditText nombre, codigo, contraseña;
     Button botonVolver;
     AdView mAdView;
+    String iplocal="http://localhost/Coordenadas/insertar_coordenada.php";
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
    // DatabaseReference usuario = FirebaseDatabase.getInstance().getReference().child("com.example.oscar.proyectofinalmoviles.Usuario");
@@ -70,4 +77,49 @@ public class ActivityRegistro extends AppCompatActivity {
             contraseña.setText("");
         }
     }
+    public void ingresarSQL(View i){
+
+        ingreSQL in = new ingreSQL();
+
+
+        in.execute();
+        Toast.makeText(getApplicationContext(),"si entra al boton",Toast.LENGTH_SHORT).show();
+    }
+    public  class  ingreSQL extends AsyncTask<Void,String,String>{
+
+        @Override
+
+        protected String doInBackground(Void... voids) {
+            try {
+                URL serviciolocal = new URL(iplocal);
+                HttpURLConnection conexion = (HttpURLConnection) serviciolocal.openConnection();
+                conexion.setRequestProperty("User-Agent","Mozilla/5.0"+
+                        "(Linuz;Android 1.5; es-Es) Ejemplo Uceva Http");
+                int conectado = conexion.getResponseCode();
+                if (conectado== HttpURLConnection.HTTP_OK){
+
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(getApplicationContext(),"si entra al hilo",Toast.LENGTH_SHORT).show();
+
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }
+
 }
