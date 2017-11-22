@@ -63,6 +63,7 @@ public class ActivityRegistro extends AppCompatActivity {
 
         contraCifrada=md5.md5(contra);
 
+
        Usuario usu= new Usuario(nom,cod,contraCifrada);
        if(nom.matches("")||cod.matches("")||contra.matches("")){
             Toast.makeText(this,"Dede llenar todos los campos",Toast.LENGTH_LONG).show();
