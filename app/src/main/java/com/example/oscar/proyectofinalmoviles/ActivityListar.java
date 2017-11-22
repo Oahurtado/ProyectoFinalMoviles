@@ -23,11 +23,11 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -46,8 +46,7 @@ public class ActivityListar extends AppCompatActivity {
 
      String cod,nombreUbi;
      int cont=0;
-     String[] latArray,lngArray ;
-    String[] nombArray = new String[1];
+
     AdView mAdView;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference();
@@ -213,31 +212,40 @@ public class ActivityListar extends AppCompatActivity {
 
 
     public void ingresarSQL(View i){
+        Toast.makeText(getApplicationContext(),"si entra al boton",Toast.LENGTH_SHORT).show();
 
         ingreSQL ing = new ingreSQL() ;
         ing.execute(iplocal,lat.getText().toString(),longi.getText().toString(),descri.getText().toString());
-        ing.execute();
-        Toast.makeText(getApplicationContext(),"si entra al boton",Toast.LENGTH_SHORT).show();
+       // ing.execute();
     }
     public  class  ingreSQL extends AsyncTask<String,Void,String>{
-
+        String mensaje="";
         @Override
 
         protected String doInBackground(String... params) {
-            String mensaje="";
+              URL serviciolocal= null;
             try {
-                URL serviciolocal = new URL(iplocal);
-                HttpURLConnection conexion = (HttpURLConnection) serviciolocal.openConnection();
+               /* URL serviciolocal = new URL(iplocal);
+                HttpURLConnection conexion = (HttpURLConnection) serviciolocal.openConnection();*/
+               HttpURLConnection conexion;
+                DataOutputStream printout;
+                DataInputStream input;
+                serviciolocal = new URL(iplocal);
+                conexion =(HttpURLConnection) serviciolocal.openConnection();
                conexion.setDoInput(true);
                conexion.setDoOutput(true);
-                conexion.setRequestProperty("User-Agent","Mozilla/5.0"+
-                        "(Linuz;Android 1.5; es-Es) Ejemplo Uceva Http");
+               conexion.setUseCaches(false);
+                conexion.setRequestProperty("Content-Type","application/json");
+                conexion.setRequestProperty("Accept","application/json");
+
                 conexion.connect();
                 JSONObject jsonparametros = new JSONObject();
                 jsonparametros.put("latitud",params[1]);
                 jsonparametros.put("longitud",params[2]);
                 jsonparametros.put("descripcion",params[3]);
+
                 OutputStream os = conexion.getOutputStream();
+
                 BufferedWriter escribir = new BufferedWriter(
                         new OutputStreamWriter(os,"UTF-8"));
                 escribir.write(jsonparametros.toString());
@@ -247,16 +255,17 @@ public class ActivityListar extends AppCompatActivity {
                 StringBuilder resultado = new StringBuilder();
 
                 if (conectado== HttpURLConnection.HTTP_OK){
-                    InputStream leer = new BufferedInputStream(conexion.getInputStream());
-                    BufferedReader json = new BufferedReader(new InputStreamReader(leer));
-
                     String linea ;
+
+                    // InputStream leer = new BufferedInputStream(conexion.getInputStream());
+                    BufferedReader json = new BufferedReader(new InputStreamReader(conexion.getInputStream()));
+
                     while ((linea=json.readLine())!=null){
                         resultado.append(linea);
                     }
                     JSONObject respuestajson = new JSONObject(resultado.toString());
                     String resulJSON = respuestajson.getString("estado");
-                    if(resulJSON.matches("1")){
+                    if(resulJSON=="1"){
                         mensaje ="Coordenada insertado con exito";
                     }else{
 
@@ -271,22 +280,35 @@ public class ActivityListar extends AppCompatActivity {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
+
+
             }
 
-
             return mensaje ;
+
         }
 
         @Override
         protected void onPostExecute(String s) {
+            list.setText(s);
             Toast.makeText(getApplicationContext(),"si entra al hilo",Toast.LENGTH_SHORT).show();
 
-            super.onPostExecute(s);
+           // super.onPostExecute(s);
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onCancelled(String s) {
+            super.onCancelled(s);
         }
     }
 

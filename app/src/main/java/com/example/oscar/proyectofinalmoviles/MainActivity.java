@@ -27,10 +27,9 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference myRef = database.getReference();
     EditText codigoUsu, contraseña;
     Button botonLogin, botonRegistro;
-    String cod, contra, nomBD,contraBd="";
+    String cod, contra,codBD,nomBD,contraBd="";
     AdView mAdView;
-    Hash md5;
-    String contraCifrada;
+    //logeo loge=null;
 
     boolean flagSinc = false;
     @Override
@@ -41,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         contraseña = (EditText) findViewById(R.id.txtContraseña);
         botonLogin = (Button) findViewById(R.id.btnLogin);
         botonRegistro = (Button) findViewById(R.id.btnRegistro);
-        md5 =new Hash();
 
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest=new AdRequest.Builder()
@@ -60,13 +58,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void ejecutar(View s) {
-        cod = codigoUsu.getText().toString().trim();
+    public void ejecutar(View s){
+        cod=codigoUsu.getText().toString().trim();
         contra = contraseña.getText().toString().trim();
-
-        if (cod.matches("") && contra.matches("")) {
-            Toast.makeText(getApplicationContext(), "Debe llenar todos los campos", Toast.LENGTH_LONG).show();
-        } else {
+        if (cod.matches("")|| contra.matches("")){
+            Toast.makeText(getApplicationContext(),"Por favor llene los campos para poder ingresar ",Toast.LENGTH_SHORT).show();
+        }else {
             boolean isMobile;
             boolean isWiFi = true;
             //Datos móviles
@@ -92,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialogo1, int id) {
                             //Toast.makeText(getApplicationContext(),"dirigiendose a login ",Toast.LENGTH_SHORT).show();
+
                             login();
                         }
                     });
@@ -117,55 +115,50 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void login() {
-
+    public void login(){
 
         //Login
-        cod = codigoUsu.getText().toString().trim();
-        contra = contraseña.getText().toString().trim();
-        contraCifrada = md5.md5(contra);
+
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         DatabaseReference myRef = data.getReference("Usuarios").child(cod);// vamos la USUARIO  y a la identificacion ingresada
         //Toast.makeText(this, "Entro", Toast.LENGTH_LONG).show();
-        //Toast.makeText(getApplicationContext(),"entro antes del listener",Toast.LENGTH_SHORT).show();
+         //Toast.makeText(getApplicationContext(),"entro antes del listener",Toast.LENGTH_SHORT).show();
 
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-            myRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    contraBd = dataSnapshot.child("contraseña").getValue().toString();/*una vez estamos dentro de los atributos del usuario con la identificacion
-                                                                                    ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
+                contraBd = dataSnapshot.child("contraseña").getValue().toString();/*una vez estamos dentro de los atributos del usuario con la identificacion
+                                                                                   ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
                                                                                         compararla con la que se ingreso que seta en Ide*/
-                    //     Toast.makeText(getApplicationContext(),"entro antes de comparar",Toast.LENGTH_SHORT).show();
-                    nomBD = dataSnapshot.child("nombre").getValue().toString();
+                nomBD=dataSnapshot.child("nombre").getValue().toString();
+                codBD=dataSnapshot.child("codigo").getValue().toString();
+                if(contra.matches(contraBd) && cod.matches(codBD)){
 
-                    if (contraCifrada.matches(contraBd)) {
+                    Intent inte = new Intent(MainActivity.this,ActivityListar.class);
+                    inte.addFlags(inte.FLAG_ACTIVITY_CLEAR_TOP | inte.FLAG_ACTIVITY_CLEAR_TASK);
+                    Bundle codigo = new Bundle();
+                    codigo.putString("Codigo",cod);
+                    inte.putExtras(codigo);
+                    startActivity(inte);
+                    Toast.makeText(getApplicationContext(),"Bienvenido "+ nomBD,Toast.LENGTH_LONG).show();
 
-                        Intent inte = new Intent(MainActivity.this, ActivityListar.class);
-                        inte.addFlags(inte.FLAG_ACTIVITY_CLEAR_TOP | inte.FLAG_ACTIVITY_CLEAR_TASK);
-                        Bundle codigo = new Bundle();
-                        codigo.putString("Codigo", cod);
-                        inte.putExtras(codigo);
-                        startActivity(inte);
-                        Toast.makeText(getApplicationContext(), "Bienvenido " + nomBD, Toast.LENGTH_LONG).show();
-                        codigoUsu.setText("");
-                        contraseña.setText("");
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
-                        codigoUsu.setText("");
-                        contraseña.setText("");
-                    }
+                     codigoUsu.setText("");
+                     contraseña.setText("");
+                }else {
+                    Toast.makeText(getApplicationContext(),"Codigo o contraseña incorrectas",Toast.LENGTH_SHORT).show();
+                    codigoUsu.setText("");
+                    contraseña.setText("");
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError e) {
-                    codigoUsu.setText("" + e.toException());
-                }
-            });
+            @Override
+            public void onCancelled(DatabaseError e) {
+                codigoUsu.setText(""+ e.toException());
+            }
+        });
 
-            //Toast.makeText(getApplicationContext(),"finalizo listener",Toast.LENGTH_SHORT).show();
-
+         //Toast.makeText(getApplicationContext(),"finalizo listener",Toast.LENGTH_SHORT).show();
     }
 
 
