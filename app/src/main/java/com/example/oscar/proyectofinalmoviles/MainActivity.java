@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference myRef = database.getReference();
     EditText codigoUsu, contraseña;
     Button botonLogin, botonRegistro;
-    String cod, contra, nomBD,contraBd="";
+    String cod, contra,codBD,nomBD,contraBd="";
     AdView mAdView;
     //logeo loge=null;
 
@@ -59,51 +59,58 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ejecutar(View s){
-        boolean isMobile;
-        boolean isWiFi=true;
-        //Datos móviles
-        //Toast.makeText(getApplicationContext(),"entro ejecutar ",Toast.LENGTH_SHORT).show();
-        boolean isConnected=false;
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        cod=codigoUsu.getText().toString().trim();
+        contra = contraseña.getText().toString().trim();
+        if (cod.matches("")|| contra.matches("")){
+            Toast.makeText(getApplicationContext(),"Por favor llene los campos para poder ingresar ",Toast.LENGTH_SHORT).show();
+        }else {
+            boolean isMobile;
+            boolean isWiFi = true;
+            //Datos móviles
+            //Toast.makeText(getApplicationContext(),"entro ejecutar ",Toast.LENGTH_SHORT).show();
+            boolean isConnected = false;
+            ConnectivityManager cm =
+                    (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if(activeNetwork!=null){
-            isConnected = activeNetwork.isConnectedOrConnecting();
-        }
-
-        if(activeNetwork!=null && isConnected){
-            isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
-            isMobile = activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE;
-
-            if(isMobile){
-                AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
-                dialogo1.setTitle("Importante");
-                dialogo1.setMessage("¿Los datos móviles estan activos desea continuar ellos?");
-                dialogo1.setCancelable(false);
-                dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogo1, int id) {
-                        //Toast.makeText(getApplicationContext(),"dirigiendose a login ",Toast.LENGTH_SHORT).show();
-                        login();
-                    }
-                });
-                dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogo1, int id) {
-                        dialogo1.cancel();
-                        Toast.makeText(getApplicationContext(),"Desactiva los datos y activa el wifi",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                dialogo1.show();
-            }else{
-                if(isWiFi){
-                    login();
-                    //Toast.makeText(this, "Estamos en login sin machetear : " + isConnected, Toast.LENGTH_LONG).show();
-                }
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            if (activeNetwork != null) {
+                isConnected = activeNetwork.isConnectedOrConnecting();
             }
-        }else{
+
+            if (activeNetwork != null && isConnected) {
+                isWiFi = activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
+                isMobile = activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE;
+
+                if (isMobile) {
+                    AlertDialog.Builder dialogo1 = new AlertDialog.Builder(this);
+                    dialogo1.setTitle("Importante");
+                    dialogo1.setMessage("¿Los datos móviles estan activos desea continuar ellos?");
+                    dialogo1.setCancelable(false);
+                    dialogo1.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            //Toast.makeText(getApplicationContext(),"dirigiendose a login ",Toast.LENGTH_SHORT).show();
+
+                            login();
+                        }
+                    });
+                    dialogo1.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialogo1, int id) {
+                            dialogo1.cancel();
+                            Toast.makeText(getApplicationContext(), "Desactiva los datos y activa el wifi", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialogo1.show();
+                } else {
+                    if (isWiFi) {
+                        login();
+                        //Toast.makeText(this, "Estamos en login sin machetear : " + isConnected, Toast.LENGTH_LONG).show();
+                    }
+                }
+            } else {
 
                 Toast.makeText(this, "No hay conexión : " + isConnected, Toast.LENGTH_SHORT).show();
 
+            }
         }
     }
 
@@ -111,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
     public void login(){
 
         //Login
-        cod=codigoUsu.getText().toString().trim();
-        contra = contraseña.getText().toString().trim();
+
         FirebaseDatabase data = FirebaseDatabase.getInstance();
         DatabaseReference myRef = data.getReference("Usuarios").child(cod);// vamos la USUARIO  y a la identificacion ingresada
         //Toast.makeText(this, "Entro", Toast.LENGTH_LONG).show();
@@ -123,12 +129,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 contraBd = dataSnapshot.child("contraseña").getValue().toString();/*una vez estamos dentro de los atributos del usuario con la identificacion
-                                                                                    ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
+                                                                                   ingresada nos vamos al atributo Contraseña y la guardamos en contrBD para luego
                                                                                         compararla con la que se ingreso que seta en Ide*/
-           //     Toast.makeText(getApplicationContext(),"entro antes de comparar",Toast.LENGTH_SHORT).show();
                 nomBD=dataSnapshot.child("nombre").getValue().toString();
-
-                if(contra.matches(contraBd)){
+                codBD=dataSnapshot.child("codigo").getValue().toString();
+                if(contra.matches(contraBd) && cod.matches(codBD)){
 
                     Intent inte = new Intent(MainActivity.this,ActivityListar.class);
                     inte.addFlags(inte.FLAG_ACTIVITY_CLEAR_TOP | inte.FLAG_ACTIVITY_CLEAR_TASK);
@@ -141,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                      codigoUsu.setText("");
                      contraseña.setText("");
                 }else {
-                    Toast.makeText(getApplicationContext(),"Contraseña incorrecta",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Codigo o contraseña incorrectas",Toast.LENGTH_SHORT).show();
                     codigoUsu.setText("");
                     contraseña.setText("");
                 }
