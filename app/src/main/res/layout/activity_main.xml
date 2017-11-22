@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.11"
             android:ems="10"
-            android:hint="Nombre de Usuario"
+            android:hint="Codigo de Usuario"
             android:inputType="textPersonName" />
 
         <EditText
