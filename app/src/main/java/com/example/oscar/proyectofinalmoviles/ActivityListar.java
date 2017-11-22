@@ -20,6 +20,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 public class ActivityListar extends AppCompatActivity {
@@ -27,6 +41,7 @@ public class ActivityListar extends AppCompatActivity {
      Button volver;
      EditText lat,longi,descri,nomb;
      TextView list;
+    String iplocal="http://localhost/Coordenadas/insertar_coordenada.php";
 
 
      String cod,nombreUbi;
@@ -197,7 +212,83 @@ public class ActivityListar extends AppCompatActivity {
 }
 
 
+    public void ingresarSQL(View i){
 
+        ingreSQL ing = new ingreSQL() ;
+        ing.execute(iplocal,lat.getText().toString(),longi.getText().toString(),descri.getText().toString());
+        ing.execute();
+        Toast.makeText(getApplicationContext(),"si entra al boton",Toast.LENGTH_SHORT).show();
+    }
+    public  class  ingreSQL extends AsyncTask<String,Void,String>{
+
+        @Override
+
+        protected String doInBackground(String... params) {
+            String mensaje="";
+            try {
+                URL serviciolocal = new URL(iplocal);
+                HttpURLConnection conexion = (HttpURLConnection) serviciolocal.openConnection();
+               conexion.setDoInput(true);
+               conexion.setDoOutput(true);
+                conexion.setRequestProperty("User-Agent","Mozilla/5.0"+
+                        "(Linuz;Android 1.5; es-Es) Ejemplo Uceva Http");
+                conexion.connect();
+                JSONObject jsonparametros = new JSONObject();
+                jsonparametros.put("latitud",params[1]);
+                jsonparametros.put("longitud",params[2]);
+                jsonparametros.put("descripcion",params[3]);
+                OutputStream os = conexion.getOutputStream();
+                BufferedWriter escribir = new BufferedWriter(
+                        new OutputStreamWriter(os,"UTF-8"));
+                escribir.write(jsonparametros.toString());
+                escribir.flush();
+                escribir.close();
+                int conectado = conexion.getResponseCode();
+                StringBuilder resultado = new StringBuilder();
+
+                if (conectado== HttpURLConnection.HTTP_OK){
+                    InputStream leer = new BufferedInputStream(conexion.getInputStream());
+                    BufferedReader json = new BufferedReader(new InputStreamReader(leer));
+
+                    String linea ;
+                    while ((linea=json.readLine())!=null){
+                        resultado.append(linea);
+                    }
+                    JSONObject respuestajson = new JSONObject(resultado.toString());
+                    String resulJSON = respuestajson.getString("estado");
+                    if(resulJSON.matches("1")){
+                        mensaje ="Coordenada insertado con exito";
+                    }else{
+
+                        mensaje ="Coordenada no insertada";
+
+                    }
+
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            return mensaje ;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Toast.makeText(getApplicationContext(),"si entra al hilo",Toast.LENGTH_SHORT).show();
+
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+        }
+    }
 
 
 }

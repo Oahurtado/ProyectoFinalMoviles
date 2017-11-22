@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -143,6 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void actualizarUbicacion(Location location) {
+
         if (location != null) {
             lat = location.getLatitude();
             lng = location.getLongitude();
@@ -175,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     };
 
     private void miUbicacion() {
+        Toast.makeText(getApplicationContext(), "Entro a mi ubicacioens", Toast.LENGTH_SHORT).show();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             return;
