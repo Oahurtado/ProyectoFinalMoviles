@@ -23,6 +23,7 @@ public class Hash {
             cifrado=e.getMessage();
             System.out.println(cifrado);
         }
+
         return cifrado;
     }
 
